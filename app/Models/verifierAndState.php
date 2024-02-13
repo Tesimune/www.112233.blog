@@ -9,8 +9,12 @@ class verifierAndState extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'uid',
         'state',
         'codeVerifier',
-        'uid'
     ];
+    public function user()
+    {
+        return $this->belongsTo('User', 'uid');
+    }
 }

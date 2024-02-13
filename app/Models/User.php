@@ -20,10 +20,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'username',
         'userType',
-        'xToken',
-        'xAlts',
+        'twitter_id',
+        'username',
+        'avatar',
+        'twitter_token',
+        'twitter_refresh_token',
         'password'
     ];
 

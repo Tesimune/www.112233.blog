@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccessTokenController;
+use App\Http\Controllers\CommentTopicController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TweetCommentController;
+use App\Http\Controllers\VerifierAndStateController;
+use App\Models\CommentTopic;
+use App\Models\TweetComment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,8 +32,25 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = auth()->user()->twitter_id;
+    return Inertia::render('Dashboard/Index', [
+        'authURL' => env('AUTH_URL'),
+        'topics' => CommentTopic::where('twitter_id', $user)->latest()->get(),
+        'comments' => TweetComment::where('twitter_id', $user)->latest()->get(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::post('/verifier', [VerifierAndStateController::class, 'store']);
+Route::get( '/verifier', [VerifierAndStateController::class, 'index']);
+Route::get('/verifier/{verifierAndState:state}', [VerifierAndStateController::class, 'show']);
+
+Route::get('/access', [AccessTokenController::class, 'index']);
+Route::post('/access', [AccessTokenController::class, 'update']);
+
+Route::post('/commentTopic', [CommentTopicController::class, 'store'])->name('topic.store');
+Route::get('/commentTopic', [CommentTopicController::class, 'index']);
+
+Route::post('/commentPost', [TweetCommentController::class, 'store']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

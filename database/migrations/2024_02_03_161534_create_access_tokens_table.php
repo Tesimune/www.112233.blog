@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('access_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('uid')->unique();
+            $table->string('twitter_id')->unique();
             $table->string('accessToken');
             $table->string('refreshToken');
             $table->text('userObject')->nullable();
